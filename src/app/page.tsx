@@ -9,7 +9,7 @@ export default function Home() {
     <div>
       <Header />
       <div className="bg-gradient-to-b from-[#9C8971] to-[#6B7181] flex justify-center items-center" style={{ height }}>
-        <Image src={OwlMain} alt="OwlMain" width={650} />
+        <Image src={OwlMain} alt="OwlMain" width={650}/>
       </div>
       <Footer />
     </div>
