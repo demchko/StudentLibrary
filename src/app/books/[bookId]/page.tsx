@@ -1,28 +1,77 @@
 'use client'
 import { Header } from "@/components/custom/Header";
-import Image from "next/image";
-import { useParams } from "next/navigation"
-import BookImg from "../../../../public/shpak.svg";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useParams } from "next/navigation";
 
-export default function ItemPage(){
-    const {bookId} = useParams();
+interface Book {
+    title: string;
+    author?: string;
+    description: string;
+    photo: string;
+    file: string;
+}
+
+export default function ItemPage() {
+    const { bookId } = useParams();
+    const [book, setBook] = useState({} as Book);
+    const [loading, setLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const response = await axios.get(`http://localhost:1488/library/${bookId}`);
+                setBook(response.data);
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData();
+    }, [bookId]);
+
+    console.log(loading);
+
+    const openFile = () => {
+        const byteCharacters = atob(book.file);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+    };
+
     return (
-        <div className="bg-gradient-to-b from-[#9C8971] to-[#6B7181]" style={{minHeight: '100vh'}} >
+        <div className="bg-gradient-to-b from-[#9C8971] to-[#6B7181]" style={{ minHeight: '100vh' }}>
             <Header />
-            <div className="pl-7 pr-7 pt-7 flex w-full" >
-                <div className="w-1/3 flex justify-end"  >
-                    <Image src={BookImg} alt={"Book Name"} className="w-full" />
-                </div>
-                <div className="ml-5" style={{width: '70%'}} >
-                    <p className="text-5xl font-bold" >Програмування мовою С - Шпак З.Я.</p>
-                    <p className="mt-8 text-lg pr-10 pl-10" >Навчальний посібник достатньо ґрунтовно охоплює різні аспекти програмування мовою С. У початкових розділах розглянуто синтаксис та семантику всіх конструктивних компонентів мови: лексем, виразів, операторів, функцій. Значну увагу приділено різновидам стандартних і користувацьких типів даних. Другу половину посібника присвячено програмним реалізаціям практичних задач. У додатках подано повні описи функцій з основних бібліотек С.</p>
-                    <div className="w-full flex justify-end items-end" style={{marginTop: '30%'}} >
-                        <Button variant="ghost" size="lg" className="text-black border-2 border-black bg-[#48647f] text-lg" >Відкрити</Button>
-                        <Button variant="ghost" size="lg" className="ml-5 text-black border-2 border-black pl-8 pr-8 bg-[#48647f] text-lg" >Завантажити</Button>
+            {
+                loading 
+                    ? <div className="w-full h-[100vh] flex justify-center items-center" >
+                        <div className="inline-block h-16 w-16 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                        role="status" />
                     </div>
-                </div>
-            </div>
+                    :  <div className="pl-7 pr-7 pt-7 flex w-full">
+                            <div className="w-1/3 flex justify-end">
+                                {book.photo && (
+                                    <img src={`data:image/jpeg;base64,${book.photo}`} alt="Photo" />
+                                )}
+                            </div>
+                            <div className="ml-5" style={{ width: '70%' }}>
+                                <p className="text-5xl font-bold">{book.title} - {book.author}</p>
+                                <p className="mt-8 text-lg pr-10 pl-10">{book.description}</p>
+                                <div className="w-full flex justify-end items-end" style={{ marginTop: '30%' }}>
+                                    <Button variant="ghost" size="lg" className="text-black border-2 border-black bg-[#48647f] text-lg" onClick={openFile}>Відкрити</Button>
+                                    <Button variant="ghost" size="lg" className="ml-5 text-black border-2 border-black pl-8 pr-8 bg-[#48647f] text-lg">Завантажити</Button>
+                            </div>
+                    </div>
+                </div>   
+            }
         </div>
     )
 }
