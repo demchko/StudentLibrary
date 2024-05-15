@@ -15,7 +15,7 @@ export const Header = () => {
             </Link>
             <div>
                 <Link href="/books" ><CustomButton>Книги</CustomButton></Link>
-                <CustomButton className="ml-4" >Дипломні та курсові роботи</CustomButton>
+                <Link href="/courseworks" ><CustomButton className="ml-4" >Дипломні та курсові роботи</CustomButton></Link>
                 <CustomButton className="ml-4" >Реферати</CustomButton>
             </div>
         </div>

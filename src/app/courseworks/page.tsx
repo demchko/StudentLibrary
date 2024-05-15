@@ -7,15 +7,15 @@ import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 
 export default function Books(){
-    const [books, setBooks] = useState([]);
+    const [courseWorks, setCourseWorks] = useState([]);
     const [input, setInput] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
           try {
             const bookService = BookService.getInstance();
-            const fetchedBooks = await bookService.getBooks('Book');
-            setBooks(fetchedBooks);
+            const fetchedBooks = await bookService.getBooks('CourseWork');
+            setCourseWorks(fetchedBooks);
           } catch (error) {
             console.error('Error fetching books data:', error);
           }
@@ -24,7 +24,7 @@ export default function Books(){
         fetchData();
       }, []);
 
-    const filteredBooks = books.filter(book => book.title.toLowerCase().includes(input.toLowerCase()));
+    const filteredBooks = courseWorks.filter(book => book.title.toLowerCase().includes(input.toLowerCase()));
 
     return (
         <div className="bg-gradient-to-b from-[#9C8971] to-[#6B7181]" style={{minHeight: '100vh'}} >

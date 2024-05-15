@@ -20,13 +20,11 @@ const categories = [
     {id: 16, title: 'Хімія'},    
 ]
 
-export const Sidebar = () => {
+export const Sidebar = ({input, setInput}) => {
     return (
         <div className="w-1/6" >
-            <p className="text-lg font-bold" >Автор</p>
-            <Input placeholder='Пошук' className="rounded-xl bg-transparent border-2 border-black text-black placeholder:text-black" />
-            <p className="text-lg font-bold mt-2" >Назва</p>
-            <Input placeholder='Пошук' className="rounded-xl bg-transparent border-2 border-black text-black placeholder:text-black" />
+            <p className="text-lg font-bold" >Назва</p>
+            <Input placeholder='Пошук' value={input} onChange={e => setInput(e.target.value)} className="rounded-xl bg-transparent border-2 border-black text-black placeholder:text-black" />
             <p className="text-lg font-bold mt-2" >Рік випуску</p>
             <div className="flex" >
                 <Checkbox />
