@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import BookService from "@/BookService";
+import { useMediaQuery } from "react-responsive";
 
 interface Book {
     title: string;
@@ -69,31 +70,32 @@ export default function ItemPage() {
         document.body.removeChild(downloadLink);
       };
 
+    const isSmall = useMediaQuery({ query: '(max-width: 767px)' });
+
     return (
-        <div className="bg-gradient-to-b from-[#9C8971] to-[#6B7181]" style={{ minHeight: '100vh' }}>
+        <div className="bg-[#121212]" style={{ minHeight: '100vh' }}>
             <Header />
             {
                 loading 
                     ? <div className="w-full h-[100vh] flex justify-center items-center" >
-                        <div className="inline-block h-16 w-16 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                        <div className="inline-block h-16 w-16 animate-spin rounded-full border-4 border-solid border-current border-r-white align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
                         role="status" />
                     </div>
-                    :  <div className="pl-7 pr-7 pt-7 flex w-full">
-                            <div className="w-1/3 flex justify-end">
+                    :  <div className={isSmall ? "flex flex-col" : "pl-7 pr-7 pt-7 flex w-full"}>
+                            <div className={isSmall ? "w-[90vw] h-[600px] flex justify-end ml-[7%]" : "w-[400px] h-[600px] flex justify-end ml-[7%]"} style={{objectFit: 'cover'}}>
                                 {book.photo && (
-                                    <img src={`data:image/jpeg;base64,${book.photo}`} alt="Photo" />
+                                    <img  src={`data:image/jpeg;base64,${book.photo}`} alt="Photo" className="rounded-xl" />
                                 )}
                             </div>
-                            <div className="ml-5" style={{ width: '70%' }}>
-                                <p className="text-5xl font-bold">{book.title} - {book.author}</p>
+                            <div className="ml-5 text-white" style={isSmall ? {width: '100%'} : { width: '70%' }}>
+                                <p className={isSmall ? "text-5xl font-bold text-center" : "text-5xl font-bold"}>{book.title} - {book.author}</p>
                                 <p className="mt-8 text-lg pr-10 pl-10">Опис: {book.description}</p>
                                 <p className="mt-8 text-lg pr-10 pl-10">Жанр: {book.genre}</p>
-                                <div className="w-full flex justify-end items-end" style={{ marginTop: '30%' }}>
-                                    <Button variant="ghost" size="lg" className="text-black border-2 border-black bg-[#48647f] text-lg" onClick={openFile}>Відкрити</Button>
+                                <div className="w-full" style={{ marginTop: '10%' }}>
+                                    <Button size="lg" className="text-lg bg-white text-black" size="lg" onClick={openFile}>Відкрити</Button>
                                     <Button
-                                        variant="ghost"
                                         size="lg"
-                                        className="ml-5 text-black border-2 border-black pl-8 pr-8 bg-[#48647f] text-lg"
+                                        className="ml-5 text-white bg-transparent border-2 border-white pl-8 pr-8 text-lg"
                                         onClick={downloadFile}
                                     >
                                         Завантажити

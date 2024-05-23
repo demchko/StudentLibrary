@@ -8,8 +8,11 @@ export default function Home() {
   return (
     <div>
       <Header />
-      <div className="bg-gradient-to-b from-[#9C8971] to-[#6B7181] flex justify-center items-center" style={{ height }}>
-        <Image src={OwlMain} alt="OwlMain" width={650}/>
+      <div className="bg-[#121212] flex justify-center items-center w-full" style={{ height }}>
+        <div className="text-center w-1/2" >
+          <p className="text-4xl text-[#6b1dae]" >Студентська бібліотека</p>
+          <p className="text-white mt-4 text-lg" >"Тільки книжки перетворять подив у допитливість. Тільки читання відкриває перед людиною розкіш інтелектуального життя." (В. О. Сухомлинський)</p>
+        </div>
       </div>
       <Footer />
     </div>

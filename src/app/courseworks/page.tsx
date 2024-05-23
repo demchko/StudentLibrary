@@ -4,11 +4,29 @@ import { Header } from "@/components/custom/Header";
 import { List } from "@/components/custom/List";
 import { Sidebar } from "@/components/custom/Sidebar";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 export default function Books(){
     const [courseWorks, setCourseWorks] = useState([]);
     const [input, setInput] = useState('');
+
+    const [loading, setLoading] = useState(false);
+
+    const router = useRouter();
+    let loginData;
+
+    useEffect(() => {
+      loginData = localStorage.getItem('loginData');
+  
+      if (loginData) {
+        setLoading(false);
+      }
+      else{
+        router.push('/');
+        setLoading(true);
+      }
+    }, [router]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -27,12 +45,21 @@ export default function Books(){
     const filteredBooks = courseWorks.filter(book => book.title.toLowerCase().includes(input.toLowerCase()));
 
     return (
-        <div className="bg-gradient-to-b from-[#9C8971] to-[#6B7181]" style={{minHeight: '100vh'}} >
-            <Header />
+        <div className="bg-[#121212] text-white" style={{minHeight: '100vh'}} >
+           {
+              !loading
+               ? <div>
+                <Header />
             <div className="pl-7 pr-7 pt-2 flex justify-between" >
                 <Sidebar input={input} setInput={setInput} />
                 <List data={filteredBooks} />
             </div>
+               </div>
+             : <div className="w-full h-[100vh] flex justify-center items-center" >
+             <div className="inline-block h-16 w-16 animate-spin rounded-full border-4 border-solid border-current border-r-white align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+             role="status" />
+         </div>  
+            }
         </div>
     )
 }

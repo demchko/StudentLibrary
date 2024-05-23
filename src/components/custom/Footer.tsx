@@ -1,10 +1,10 @@
 'use client'
 import { Button } from "../ui/button";
-import { CustomButton } from "./CustomButtom";
+import { CustomButton } from "./CustomButton";
 import { Dialog, DialogHeader, DialogTitle, DialogContent, DialogTrigger } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
@@ -27,6 +27,7 @@ export const Footer = () => {
     const [registerFirstName, setRegisterFirstName] = useState<string>('');
     const [registerLastName, setRegisterLastName] = useState<string>('');
 
+
     useEffect(() => {
         const fetchData = async () => {
             const response = await axios.get('http://localhost:1488/auth/sign-up');
@@ -37,25 +38,26 @@ export const Footer = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
         try {
-            const response = await axios.post('http://localhost:1488/auth/log-in', { isic: loginISIC, password: loginPassword }, {
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              });
-
-    
-            if(response.status === 200){
-                setRegister(false);
-                router.push('/books');
-                setError(false);
-            }
+          const response = await axios.post(
+            'http://localhost:1488/auth/log-in',
+            { isic: loginISIC, password: loginPassword },
+            { withCredentials: true }
+          );
+          if (response.status === 200) {
+            setRegister(false);
+            router.push('/books');
+            setError(false);
+      
+            localStorage.setItem('loginData', JSON.stringify(response.data));
+          }
         } catch (error) {
           console.error(error);
           setError(true);
         }
       };
+      
+
 
     const handleRegister = async(e) => {
         e.preventDefault();
@@ -86,31 +88,44 @@ export const Footer = () => {
         }else{
             setPasswordError(true);
         }
-    }  
+    }
+
+    let loginData;
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+      loginData = localStorage.getItem('loginData');
+  
+      if (loginData) {
+        setLoading(false);
+      }
+      else{
+        setLoading(true);
+        window
+      }
+    }, [router]);
 
     return (
-        <div className="bg-[#4e5360] w-full flex justify-center items-center text-white pt-6 pb-6" style={{height: '90px'}} >
-             <div className="flex" >
+        <div className="bg-[#121212] w-full flex justify-center items-center text-white pt-6 pb-6" style={{height: '90px'}} >
+             {
+                loading &&
+                <div>
              <Dialog open={login} onOpenChange={() => setLogin(!login)}>
                     <DialogTrigger asChild>
-                        <CustomButton onClick={() => setLogin(true)} >Увійти</CustomButton>
+                        <CustomButton className="border border-gray-400" size="lg" onClick={() => setLogin(true)} >Увійти</CustomButton>
                     </DialogTrigger>
-                    <DialogContent className="bg-gradient-to-b from-[#6B7181] to-[#A08C75] " >
+                    <DialogContent className="bg-[#121212] border-none text-white" >
                         <DialogHeader>
                             <DialogTitle className="text-3xl" >Вхід в особистий кабінет</DialogTitle>
                         </DialogHeader>
                         <div className="text-center" >
-                            <Input value={loginISIC} onChange={e => setLoginISIC(e.target.value)} placeholder="Номер студентського" className="mb-3 border-2 border-black text-center"/>
-                            <Input type="password" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} placeholder="Пароль" className="mb-3 border-2 border-black text-center" />
+                            <Input value={loginISIC} onChange={e => setLoginISIC(e.target.value)} placeholder="Номер студентського" className="mb-3 text-center text-white bg-transparent"/>
+                            <Input type="password" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} placeholder="Пароль" className="mb-3 text-center text-white bg-transparent" />
                             <p className="text-red-500 font-bold" >{error && "Неправильні дані"}</p>
-                            <Button className="bg-black pl-7 pr-7" onClick={e => handleSubmit(e)} >Увійти</Button>
-                            <div className="flex justify-center items-center mt-7" >
-                                <Checkbox />
-                                <p className="ml-1 font-bold" >Запам'ятати мене</p>
-                            </div>
+                            <Button className="text-white bg-transparent border border-gray-400 pl-7 pr-7" onClick={e => handleSubmit(e)} >Увійти</Button>
                             <div className="flex justify-center mt-5"  >
                                 <p>Не маєте профілю? </p>
-                                <p className="ml-1 text-blue-600 font-bold cursor-pointer" onClick={() => {
+                                <p className="ml-1 text-blue-500 font-bold cursor-pointer" onClick={() => {
                                     setLogin(false);
                                     setRegister(true);
                                     setError(false);
@@ -121,18 +136,18 @@ export const Footer = () => {
                 </Dialog>
                 <Dialog open={register} onOpenChange={() => setRegister(!register)} >
                     <DialogTrigger asChild>
-                        <CustomButton className="ml-4" onClick={() => setRegister(true)} >Зареєструватися</CustomButton>
+                        <CustomButton className="ml-4 border border-gray-400" size="lg" onClick={() => setRegister(true)} >Зареєструватися</CustomButton>
                     </DialogTrigger>
-                    <DialogContent className="bg-gradient-to-b from-[#6B7181] to-[#A08C75] " >
+                    <DialogContent className="bg-[#121212] border-none text-white" >
                         <DialogHeader>
                             <DialogTitle className="text-3xl" >Реєстрація</DialogTitle>
                         </DialogHeader>
                         <div className="text-center" >
-                            <Input placeholder="Ім'я" value={registerFirstName} onChange={e => setRegisterFirstName(e.target.value)} className="mb-3 border-2 border-black text-center"  />
-                            <Input placeholder="Прізвище"  value={registerLastName} onChange={e => setRegisterLastName(e.target.value)} className="mb-3 border-2 border-black text-center" />
+                            <Input placeholder="Ім'я" value={registerFirstName} onChange={e => setRegisterFirstName(e.target.value)} className="mb-3 text-center text-white bg-transparent"  />
+                            <Input placeholder="Прізвище"  value={registerLastName} onChange={e => setRegisterLastName(e.target.value)} className="mb-3 text-center text-white bg-transparent" />
                             <Select onValueChange={e => setSelectedUniversityId(e.id)}>
-                                <SelectTrigger className="mb-3 border-2 border-black text-center" >
-                                    <SelectValue placeholder="Оберіть ваш університет" />
+                                <SelectTrigger className="mb-3 text-center text-white bg-transparent" >
+                                    <SelectValue placeholder="Оберіть ваш університет" className="text-center" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
@@ -145,12 +160,12 @@ export const Footer = () => {
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>
-                            <Input value={registerISIC} onChange={e => setRegisterISIC(e.target.value)} placeholder="Номер студентського" className="mb-3 border-2 border-black text-center"/>
-                            <Input type="password" placeholder="Пароль" className="mb-3 border-2 border-black text-center"  value={registerPassword} onChange={e => setRegisterPassword(e.target.value)} />
-                            <Input type="password" placeholder="Підтвердіть пароль"  className="mb-3 border-2 border-black text-center" value={registerPasswordRepeat} onChange={e => setRegisterPasswordRepeat(e.target.value)} />
+                            <Input value={registerISIC} onChange={e => setRegisterISIC(e.target.value)} placeholder="Номер студентського" className="mb-3 text-center text-white bg-transparent"/>
+                            <Input type="password" placeholder="Пароль" className="mb-3 text-center text-white bg-transparent"  value={registerPassword} onChange={e => setRegisterPassword(e.target.value)} />
+                            <Input type="password" placeholder="Підтвердіть пароль"  className="mb-3 text-center text-white bg-transparent" value={registerPasswordRepeat} onChange={e => setRegisterPasswordRepeat(e.target.value)} />
                             <p className="text-red-500 font-bold" >{passwordError && "Паролі не збігаються"}</p>
                             <p className="text-red-500 font-bold" >{error && "Невірні дані"}</p>
-                            <Button className="bg-black" onClick={e => handleRegister(e)} >Зареєструватися</Button>
+                            <Button className="text-white bg-transparent border border-gray-400 pl-7 pr-7" onClick={e => handleRegister(e)} >Зареєструватися</Button>
                             <div className="flex justify-center mt-5" >
                                 <p>Ви вже маєте акаунт? </p>
                                 <p className="ml-1 text-blue-600 font-bold cursor-pointer" onClick={() => {
@@ -163,6 +178,7 @@ export const Footer = () => {
                     </DialogContent>
                 </Dialog>
             </div>
+             }
         </div>
     )
 }
