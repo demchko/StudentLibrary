@@ -49,6 +49,9 @@ export const Header = () => {
                     <Link href="/courseworks" ><CustomButton className="hover:shadow-white hover:shadow-sm transition-all duration-300 ease-in-out" >Дипломні та курсові роботи</CustomButton></Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
+                    <Link href="/essays" ><CustomButton className="hover:shadow-white hover:shadow-sm transition-all duration-300 ease-in-out" >Реферати</CustomButton></Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
                   {user?.name && <Button onClick={() => {
                         localStorage.removeItem('loginData');
                         setUser({});
@@ -60,7 +63,7 @@ export const Header = () => {
                 :  <div className="flex items-center" >
                 <Link href="/books" ><CustomButton className="hover:shadow-white hover:shadow-sm transition-all duration-300 ease-in-out" >Книги</CustomButton></Link>
                 <Link href="/courseworks" ><CustomButton className="ml-4 hover:shadow-white hover:shadow-sm transition-all duration-300 ease-in-out" >Дипломні та курсові роботи</CustomButton></Link>
-                <CustomButton className="ml-4" >Реферати</CustomButton>
+                <Link href="/essays" ><CustomButton className="ml-4" >Реферати</CustomButton></Link>
                     {
                         user?.name && <div className="bg-white w-16 h-16 rounded-full text-black flex justify-center items-center text-[12px] text-center" >
                             {user?.name}

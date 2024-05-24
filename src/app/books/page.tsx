@@ -46,7 +46,6 @@ export default function Books(){
     const filteredBooks = books.filter(book => book.title.toLowerCase().includes(input.toLowerCase()));
     const isSmall = useMediaQuery({ query: '(max-width: 750px)' });
 
-    console.log(books);
 
     return (
         <div className="bg-[#121212] text-white" style={{minHeight: '100vh'}} >

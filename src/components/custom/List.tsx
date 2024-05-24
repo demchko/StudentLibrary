@@ -1,4 +1,5 @@
 'use client'
+import { useMediaQuery } from "react-responsive";
 import { Button } from "../ui/button";
 import Link from "next/link";
 
@@ -9,9 +10,9 @@ interface Book {
 }
 
 export const List = ({data}) => {
-    console.log(data);
+    const isSmall = useMediaQuery({ query: '(max-width: 750px)' });
     return (
-        <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-10" style={{width: '70%'}} >
+        <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-10" style={isSmall ? {width: '100%'} : {width: '70%'}} >
             {data.map((item: Book) => (
                 <Link href={`/books/${item.id}`} >
                     <div className="bg-[#1c1c1c] rounded-xl text-center pt-5 pb-5 hover:shadow-sm hover:shadow-gray-600 hover:scale-105 transition-all duration-300 ease-in-out" >

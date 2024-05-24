@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useMediaQuery } from "react-responsive";
 
-export default function Books(){
+export default function Essays(){
     const [courseWorks, setCourseWorks] = useState([]);
     const [input, setInput] = useState('');
 
@@ -33,7 +33,7 @@ export default function Books(){
         const fetchData = async () => {
           try {
             const bookService = BookService.getInstance();
-            const fetchedBooks = await bookService.getBooks('CourseWork');
+            const fetchedBooks = await bookService.getBooks('Essays');
             setCourseWorks(fetchedBooks);
           } catch (error) {
             console.error('Error fetching books data:', error);
